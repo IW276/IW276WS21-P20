@@ -3,9 +3,7 @@ from scipy.spatial import distance
 
 class PxFeatureVector:
     id = -1  # add ID to the vector itself?
-    attributes = {  # TODO Must be implemented!!
-        "0": 0
-    }
+    attributes = {"0": 0}  # TODO Must be implemented!!
 
     def __init__(self):
         pass
@@ -25,3 +23,10 @@ class PxFeatureVector:
             dist2 = euclid(my_vector, vector.attributes.values())
             add(dist2, vector)
         return list
+
+    def compare_pxvector(self, compare_with):
+        euclid = distance.euclidean
+        my_vector = self.attributes.values()
+        dist2 = euclid(my_vector, compare_with.attributes.values())
+
+        return dist2
