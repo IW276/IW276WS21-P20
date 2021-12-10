@@ -1,16 +1,32 @@
+from scipy.spatial import distance
 
 
-class PxFeatureVector():
-    attributes = { #TODO Must be implemented!!
-        0:"0"
-    }
-
+class PxFeatureVector:
+    id = -1  # add ID to the vector itself?
+    attributes = {"0": 0}  # TODO Must be implemented!!
 
     def __init__(self):
         pass
-    def getAttribute(self, num):
+
+    def get_attribute(self, num):
         return -1
-    def getAttributes(self):
+
+    def get_attributes(self):
         return -1
-    def comparePxVectors(self,compareWith):
-        return -1 #TODO Comparing function for the ranking.
+
+    def compare_pxvectors(self, compare_with):
+        euclid = distance.euclidean
+        my_vector = self.attributes.values()
+        list = []
+        add = list.add
+        for vector in compare_with:
+            dist2 = euclid(my_vector, vector.attributes.values())
+            add(dist2, vector)
+        return list
+
+    def compare_pxvector(self, compare_with):
+        euclid = distance.euclidean
+        my_vector = self.attributes.values()
+        dist2 = euclid(my_vector, compare_with.attributes.values())
+
+        return dist2

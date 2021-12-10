@@ -1,0 +1,95 @@
+IDEA 1 comparison improvement
+~350 vektoren aus der gallery werden geladen (nen wir mal G-Vektoren)
+70 PxVektoren kommen vom CNN Feature Extractor
+Ablauf im Moment:
+Vektorvergleich wird aufgerufen auf einem PxVektor der dann 350 G-Vektoren übergeben bekommt und die distance zu jedem berechnet
+Vergleich gibt Candidate Pool mit <threshold> Einträgen & entsprechender distance zurück
+Vorschlag:
+G-Vektoren nach dem Laden nehmen und pro ID einen Mittelwert Vektor (M-Vektor) erhalten
+diese ~70 M-Vektoren dann den PxVektoren zum Berechnen der Distanz geben
+-> statt 70*350 (=24.500) Berechnungen jetzt 350+70*70 (=5.250)
+
+jetzige implementierung:
+5 verktoren in personen vorgehalten
+1 vektor wird an die datenbank übergeben, die alle ~70personen hält, die je bis zu 5 vektoren halten
+datenbank gibt jeder person den vektor
+person vergleicht den vektor mit allen 5 vektoren
+peron bildet aus der distanz einen mittelwert und gibt diesen zurück
+
+vorschlag:
+person hat mittelwert der gehaltenen vektoren abgespeichert und vergleicht den neuen vektor mit diesem mittelwert
+-> 4 weniger vergleiche pro person, wo wir wieder bei den oben genannten 5.250, statt 24.500 Berechnungen sind
+das Ganze kann noch weiter reduziert werden, indem personen, die bereits gematched wurden, nicht weiter im Vergleich der Datenbank vorkommen
+
+#######################################################
+
+IDEA 2 Maps instead of lists ?
+Python supports a couple of looping constructs. The for statement is most commonly used. It loops over the elements of a sequence, assigning each to the loop variable. If the body of your loop is simple, the interpreter overhead of the for loop itself can be a substantial amount of the overhead. This is where the map function is handy. You can think of map as a for moved into C code. The only restriction is that the "loop body" of map must be a function call. Besides the syntactic benefit of list comprehensions, they are often as fast or faster than equivalent use of map.
+
+Here's a straightforward example. Instead of looping over a list of words and converting them to upper case:
+
+
+newlist = []
+for word in oldlist:
+    newlist.append(word.upper())
+you can use map to push the loop from the interpreter into compiled C code:
+
+
+newlist = map(str.upper, oldlist)
+List comprehensions were added to Python in version 2.0 as well. They provide a syntactically more compact and more efficient way of writing the above for loop:
+
+
+newlist = [s.upper() for s in oldlist]
+Generator expressions were added to Python in version 2.4. They function more-or-less like list comprehensions or map but avoid the overhead of generating the entire list at once. Instead, they return a generator object which can be iterated over bit-by-bit:
+
+
+iterator = (s.upper() for s in oldlist)
+Which method is appropriate will depend on what version of Python you're using and the characteristics of the data you are manipulating.
+
+#######################################################
+
+IDEA 3 Avoiding dots... (especially in loops)
+https://wiki.python.org/moin/PythonSpeed/PerformanceTips#Avoiding_dots...
+example:
+    upper = str.upper
+    newlist = []
+    append = newlist.append
+    for word in oldlist:
+        append(upper(word))
+
+#######################################################
+
+IDEA 4
+local variables are faster than global variables in python
+
+At the time I originally wrote this I was using a 100MHz Pentium running BSDI. I got the following times for converting the list of words in /usr/share/dict/words (38,470 words at that time) to upper case:
+    Version Time (seconds)
+    Basic loop 3.47
+    Eliminate dots 2.45
+    Local variable & no dots 1.79
+    Using map function 0.54
+
+#######################################################
+
+IDEA 5
+minimize high function overhead of python
+-> call functions less often
+dont: (0.758s)
+    def doit1(i):
+        global x
+        x = x + i
+
+    list = range(100000)
+    t = time.time()
+    for i in list:
+    doit1(i)
+
+do: (0.204s)
+    def doit2(list):
+        global x
+        for i in list:
+            x = x + i
+
+    list = range(100000)
+    t = time.time()
+    doit2(list)
