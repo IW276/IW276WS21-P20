@@ -30,7 +30,6 @@ def create_crops(crop_coordinates, image_to_crop):
         bottom_right = to_crop['bottom']
         width = bottom_right[0] - top_left[0]
         height = bottom_right[1] - top_left[1]
-        append = resulting_crops.append()
         resulting_crops.append(
             {
                 'id': to_crop['id'],
