@@ -4,10 +4,12 @@ import cv2
 import ImgIngest
 
 
-def draw_on_image(image_to_edit, top_left_corner, bottom_right_corner, person_id):
+def draw_on_image(image_to_edit, left, top, width, height, person_id):
     red = person_id * 30 % 255
     green = person_id * 30 % 255
     blue = person_id * 30 % 255
+    top_left_corner = (left, top)
+    bottom_right_corner = (left + width, top + height)
     color = (red, green, blue)
     thickness = 1
     edited_image = cv2.rectangle(image_to_edit, top_left_corner, bottom_right_corner, color, thickness)
@@ -35,7 +37,7 @@ class OpencvGUI:
         start_time = time.time()
         while True:
             image_info = ingestion.get_frame_info()
-            self.update_image(image_info['img'], self.coordinates)
+            self.update_image(image_info['img'], image_info['data'])
             cv2.imshow(self.window_name, self.image)
             cv2.waitKey(1)
 
@@ -45,11 +47,16 @@ class OpencvGUI:
                 cv2.destroyAllWindows()
                 return
 
-    def update_image(self, image_path, coordinates):
+    def update_image(self, image_path, coords):
         self.image = cv2.imread(image_path.__str__(), cv2.IMREAD_COLOR)
 
-        for entry in self.coordinates:
-            self.image = draw_on_image(self.image, entry['top'], entry['bottom'], entry['id'])
+        for row in coords.itertuples():
+            self.image = draw_on_image(self.image,
+                                       row[3],
+                                       row[4],
+                                       row[5],
+                                       row[6],
+                                       1)
         return
 
 

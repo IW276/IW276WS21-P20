@@ -59,7 +59,7 @@ class ImgIngest:
 
     def get_frame_lines(self):
         column_names = self.data_frame.columns
-        frame_lines = self.data_frame.loc[self.data_frame[column_names[0]] == str(self.frame_counter)]
+        frame_lines = self.data_frame.loc[self.data_frame[column_names[0]] == self.frame_counter]
         #frame_lines = self.data_frame['frame == ' + str(self.frame_counter)]
         #frame_lines = self.data_frame[self.dataframe.frame == self.frame_counter]
         #frame_lines = self.data_frame.query(column_names[0] + ' = ' + str(self.frame_counter))
