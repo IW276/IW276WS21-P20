@@ -49,12 +49,6 @@ for entry in coordinates:
 window_name = 'Image'
 cv2.imshow(window_name, image)
 
-# To hold the window on screen, we use cv2.waitKey method
-# Once it detected the close input, it will release the control
-# To the next line
-# First Parameter is for holding screen for specified milliseconds
-# It should be positive integer. If 0 pass an parameter, then it will
-# hold the screen until user close it.
-cv2.waitKey(0)
+cv2.waitKey(50)
 
 cv2.destroyAllWindows()
