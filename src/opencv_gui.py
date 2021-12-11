@@ -40,7 +40,9 @@ class OpencvGUI:
         start_time = time.time()
         scale_percent_1 = 80
 
-        toolbar = numpy.zeros((512, 512, 1), dtype="uint8")
+        toolbar = numpy.zeros((512, 512, 3), dtype="uint8")
+
+        cv2.namedWindow("Frame")
         while True:
             image_info = ingestion.get_frame_info()
 
@@ -51,10 +53,10 @@ class OpencvGUI:
             width_1 = int(self.image.shape[1] * (scale_percent_1 / 100))
             height_1 = int(self.image.shape[0] * (scale_percent_1 / 100))
             dim_1 = (width_1, height_1)
-            rescaled_toolbar = cv2.resize(toolbar, dim_1, interpolation=cv2.INTER_AREA)
+            rescaled_toolbar = cv2.resize(toolbar, (width_1, 50), interpolation=cv2.INTER_AREA)
             rescaled_image = cv2.resize(self.image, dim_1, interpolation=cv2.INTER_AREA)
-
-            cv2.imshow(self.window_name, rescaled_image)
+            combined_image = numpy.concatenate((rescaled_toolbar, rescaled_image), axis=0)
+            cv2.imshow(self.window_name, combined_image)
             cv2.waitKey(1)
 
             if image_info['frame_count_total'] <= image_info['current_frame']:
