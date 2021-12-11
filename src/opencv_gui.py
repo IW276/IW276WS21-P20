@@ -5,12 +5,14 @@ import ImgIngest
 import numpy
 
 
-def draw_on_image(image_to_edit, top_left_corner, bottom_right_corner, person_id):
+def draw_on_image(image_to_edit, left, top, width, height, person_id):
     red = person_id * 30 % 255
     green = person_id * 30 % 255
     blue = person_id * 30 % 255
     color = (red, green, blue)
     thickness = 1
+    top_left_corner = (left, top)
+    bottom_right_corner = (left + width, top + height)
     edited_image = cv2.rectangle(image_to_edit, top_left_corner, bottom_right_corner, color, thickness)
     font = cv2.FONT_HERSHEY_SIMPLEX
     org = (top_left_corner[0], top_left_corner[1] - 20)
