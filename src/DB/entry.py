@@ -7,10 +7,10 @@ import PxFeatureVector
 class entry:
 
     tensors = getTensors.getTensors()
-    db = database.database(-1, -1)
+    db = database.database(-1, -1)  # Gute Werte???
     print("Test")
 
     alltensors = tensors.getTensors()
 
     for tensor in alltensors:
-        db.updatePersonByVector(tensor)
+        db.update_person_by_vector(tensor)
