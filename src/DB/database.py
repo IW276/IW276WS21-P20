@@ -33,7 +33,7 @@ class database:
             self.all_persons[found_i_d].add_px_vector(new_px_vector)
             return found_i_d
         else:
-            new_person = _person._person(self.__create_new_i_d)
+            new_person = Person.Person(self.__create_new_i_d)
             self.all_persons.append(new_person)
         return -1
 
@@ -61,7 +61,7 @@ class database:
         If more exist, the closest (aka highest ranked) will be picked and deleted.
         """
 
-        person_to_delete = _person._person(-1)
+        person_to_delete = Person.Person(-1)
         person_to_delete.add_px_vector(px_vector)
         return self.delete_person(person_to_delete)
 
@@ -116,3 +116,5 @@ class database:
             age = check_person.get_age()
             if age > self.person_time_to_live:
                 del self.all_persons[check_person.get_i_d()]
+            else:
+                check_person.increase_age()
