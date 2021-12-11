@@ -20,7 +20,7 @@ model = torchreid.models.build_model(
     pretrained=True,
 )
 
-model = model.cuda()
+model = model.cpu()
 
 optimizer = torchreid.optim.build_optimizer(model, optim="adam", lr=0.0003)
 
