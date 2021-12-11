@@ -3,46 +3,51 @@ import PxFeatureVector
 
 
 class Person:
-    myPxFeatureVectors = collections.deque(maxlen=5)
+    my_px_feature_vectors = collections.deque(maxlen=5)
     id = -1
-    age = -1
+    age = 0
 
-    def __init__(self, myID):
-        self.id = myID
+    def __init__(self, my_i_d):
+        self.id = my_i_d
 
-    def getPxVector(self, num):
-        return self.myPxFeatureVectors.index(num)
+    def get_px_vector(self, num):
+        return self.my_px_feature_vectors.index(num)
 
-    def getPxVectors(self):
-        return self.myPxFeatureVectors
+    def get_px_vectors(self):
+        return self.my_px_feature_vectors
 
-    def addPxVector(self, newVector):
+    def add_px_vector(self, new_tensor):
         if 0 == 0:
-            pass  # Implement checkup if newVector is a fitting vector!
-        self.myPxFeatureVectors.append(newVector)
+            pass  # _implement checkup if new_vector is a fitting vector!
+        print(str(new_tensor))
+        new_vector = PxFeatureVector.PxFeatureVector(new_tensor)
+        self.my_px_feature_vectors.append(new_vector)
         age = 0
         return 1
 
-    def addPxVectors(self, newVectors):
-        for newVector in newVectors:
-            self.addPxVector(newVector)
+    def add_px_vectors(self, new_vectors):
+        for new_vector in new_vectors:
+            self.add_px_vector(new_vector)
 
-    def compareMeToPxVector(self, PxVector):
-        averageRanking = 0
-        amountOfFrames = 0
+    def compare_me_to_px_vector(self, px_vector):
+        average_ranking = 0
+        amount_of_frames = 0
 
-        for compareWith in self.myPxFeatureVectors:
-            averageRanking += compareWith.comparePxVectors(compareWith)
-            amountOfFrames += 1
-        if amountOfFrames == 0:
+        for compare_with in self.my_px_feature_vectors:
+            average_ranking += compare_with.compare_px_vector(px_vector)
+            amount_of_frames += 1
+        if amount_of_frames == 0:
             return -1
-        return averageRanking / amountOfFrames
+        return average_ranking / amount_of_frames
 
-    def getAge(self):
+    def get_age(self):
         return self.age
 
-    def getID(self):
+    def increase_age(self):
+        self.age += 1
+
+    def get_i_d(self):
         return self.id
 
-    def setID(self, myID):
-        self.id = myID
+    def set_i_d(self, my_i_d):
+        self.id = my_i_d

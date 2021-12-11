@@ -10,10 +10,10 @@ from torchreid.utils import FeatureExtractor
 class getTensors:
     def getTensors(self):
         extractor = FeatureExtractor(
-            model_name="osnet_x1_0",
+            model_name="osnet_x0_25",
             # model_path="F:\\n\\shufflenet-bee1b265.pth.tar",
             # model_path="F:\\n\\mlfn-9cb5a267.pth.tar",
-            model_path="F:\\n\\osnet_ain_x1_0_imagenet.pth",
+            model_path="F:\\n\\osnet_ain_x0_25_imagenet.pyth",
             # model_path="F:\\n\\osnet_ibn_x1_0_imagenet.pth",
             # model_path="F:\\n\\shufflenet-bee1b265.pth.tar",
             device="cpu",
@@ -29,9 +29,9 @@ class getTensors:
 
         features = extractor(image_list)
         testFile = open("F:\\n\\testfile.txt", "w")
-        for objec in features:
-            print(str(objec))
-            testFile.write(str(objec) + "\n")
+        # for objec in features:
+        # print(str(objec))
+        # testFile.write(str(objec) + "\n")
         # print(str(objec))
         # testFile.write(str(objec) + "\n")
         return features
