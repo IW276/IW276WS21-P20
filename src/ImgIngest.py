@@ -23,7 +23,8 @@ class ImgIngest:
         self.path_img_folder = path
         pathlib_path = pathlib.Path(path)
         for child in pathlib_path.iterdir():
-            self.images.append(child)
+            self.images.append(child.__str__())
+        self.images.sort()
         self.total_number_of_frames = len(self.images)
     def get_path_img_folder(self):
         return self.path_img_folder

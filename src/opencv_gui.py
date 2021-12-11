@@ -3,7 +3,7 @@ import time
 import cv2
 import ImgIngest
 import numpy
-
+import cropper
 
 def draw_on_image(image_to_edit, left, top, width, height, person_id):
     red = person_id * 30 % 255
@@ -23,12 +23,21 @@ def draw_on_image(image_to_edit, left, top, width, height, person_id):
     return edited_image
 
 
+def f(*args):
+    return
+
+
 class OpencvGUI:
     coordinates = [{'top': (100, 100), 'bottom': (200, 200), 'id': 1},
                    {'top': (300, 300), 'bottom': (400, 400), 'id': 2},
                    {'top': (500, 500), 'bottom': (600, 600), 'id': 3}]
     image = None
     window_name = 'Personenidentifikation mit rapid Re-Identification'
+    running = True
+
+    def close(self, *args):
+        self.running = False
+        cv2.destroyAllWindows()
 
     def run(self, image_dir_param, detection_file_param):
         # init ingest
@@ -40,24 +49,38 @@ class OpencvGUI:
         start_time = time.time()
         scale_percent_1 = 80
 
-        toolbar = numpy.zeros((512, 512, 3), dtype="uint8")
+        cv2.namedWindow(self.window_name)
+        cv2.createTrackbar('close', self.window_name, 0, 1, f)
+        cv2.createTrackbar('show crops', self.window_name, 0, 1, f)
 
-        cv2.namedWindow("Frame")
-        while True:
+        while self.running:
             image_info = ingestion.get_frame_info()
 
-            # draw BBs
-            self.update_image(image_info['img'], image_info['data'])
+            #showing crops for demo purposes
+            if cv2.getTrackbarPos('show crops', self.window_name) == 1:
+                crops_image = cropper.create_crops(image_info['img'].__str__(), image_info['data'])
+                width_1 = int(self.image.shape[1] * (scale_percent_1 / 100))
+                height_1 = int(self.image.shape[0] * (scale_percent_1 / 100))
+                dim_1 = (width_1, height_1)
+                #rescaled_image = cv2.resize(crops_image, dim_1, interpolation=cv2.INTER_AREA)
+                cv2.imshow(self.window_name, crops_image[0])
+                cv2.waitKey(200)
 
-            # image scaling
-            width_1 = int(self.image.shape[1] * (scale_percent_1 / 100))
-            height_1 = int(self.image.shape[0] * (scale_percent_1 / 100))
-            dim_1 = (width_1, height_1)
-            rescaled_toolbar = cv2.resize(toolbar, (width_1, 50), interpolation=cv2.INTER_AREA)
-            rescaled_image = cv2.resize(self.image, dim_1, interpolation=cv2.INTER_AREA)
-            combined_image = numpy.concatenate((rescaled_toolbar, rescaled_image), axis=0)
-            cv2.imshow(self.window_name, combined_image)
-            cv2.waitKey(1)
+            else:
+                # draw BBs
+                self.update_image(image_info['img'], image_info['data'])
+
+                # image scaling
+                width_1 = int(self.image.shape[1] * (scale_percent_1 / 100))
+                height_1 = int(self.image.shape[0] * (scale_percent_1 / 100))
+                dim_1 = (width_1, height_1)
+                rescaled_image = cv2.resize(self.image, dim_1, interpolation=cv2.INTER_AREA)
+                cv2.imshow(self.window_name, rescaled_image)
+                cv2.waitKey(1)
+
+            if cv2.getTrackbarPos('close', self.window_name) == 1:
+                cv2.destroyAllWindows()
+                return
 
             if image_info['frame_count_total'] <= image_info['current_frame']:
                 end_time = time.time()
