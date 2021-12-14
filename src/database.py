@@ -18,12 +18,19 @@ class database:
         if time_to_live_for_persons > 0 & time_to_live_for_persons < 100:
             self.person_time_to_live = time_to_live_for_persons
 
+    def update_tensorList(self, tensorList):
+        amount_of_tensors = 0
+        for tensor in tensorList:
+            self.update_person_by_vector(tensor)
+            amount_of_tensors += 1
+        return amount_of_tensors
+
     def update_person_by_vector(self, new_px_vector):
         best_rank = 9999
         found_i_d = -1
 
         for compare_with in self.all_persons:
-            if compare_with.get_age != 0:
+            if compare_with.get_age() != 0:
                 new_rank = compare_with.compare_me_to_px_vector(new_px_vector)
                 if new_rank < best_rank:
                     best_rank = new_rank
