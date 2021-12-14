@@ -8,3 +8,4 @@ scipy==1.5.4
 six==1.16.0
 torch==1.10.0
 typing-extensions==4.0.1
+-e git+https://github.com/KaiyangZhou/deep-person-reid.git@6987d99074fcc63146660b83b38218c37b4412b3#egg=torchreid
