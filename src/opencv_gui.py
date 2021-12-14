@@ -4,6 +4,9 @@ import cv2
 import ImgIngest
 import numpy
 import cropper
+import feature_extractor_interface
+import database
+
 
 def draw_on_image(image_to_edit, left, top, width, height, person_id):
     red = person_id * 30 % 255
@@ -13,12 +16,22 @@ def draw_on_image(image_to_edit, left, top, width, height, person_id):
     thickness = 1
     top_left_corner = (left, top)
     bottom_right_corner = (left + width, top + height)
-    edited_image = cv2.rectangle(image_to_edit, top_left_corner, bottom_right_corner, color, thickness)
+    edited_image = cv2.rectangle(
+        image_to_edit, top_left_corner, bottom_right_corner, color, thickness
+    )
     font = cv2.FONT_HERSHEY_SIMPLEX
     org = (top_left_corner[0], top_left_corner[1] - 20)
     font_scale = 1
-    edited_image = cv2.putText(edited_image, 'ID:' + str(person_id), org, font,
-                               font_scale, color, thickness, cv2.LINE_AA)
+    edited_image = cv2.putText(
+        edited_image,
+        "ID:" + str(person_id),
+        org,
+        font,
+        font_scale,
+        color,
+        thickness,
+        cv2.LINE_AA,
+    )
 
     return edited_image
 
@@ -28,11 +41,13 @@ def f(*args):
 
 
 class OpencvGUI:
-    coordinates = [{'top': (100, 100), 'bottom': (200, 200), 'id': 1},
-                   {'top': (300, 300), 'bottom': (400, 400), 'id': 2},
-                   {'top': (500, 500), 'bottom': (600, 600), 'id': 3}]
+    coordinates = [
+        {"top": (100, 100), "bottom": (200, 200), "id": 1},
+        {"top": (300, 300), "bottom": (400, 400), "id": 2},
+        {"top": (500, 500), "bottom": (600, 600), "id": 3},
+    ]
     image = None
-    window_name = 'Personenidentifikation mit rapid Re-Identification'
+    window_name = "Personenidentifikation mit rapid Re-Identification"
     running = True
 
     def close(self, *args):
@@ -50,18 +65,25 @@ class OpencvGUI:
         scale_percent_1 = 80
 
         cv2.namedWindow(self.window_name)
-        cv2.createTrackbar('close', self.window_name, 0, 1, f)
+        cv2.createTrackbar("close", self.window_name, 0, 1, f)
+        extractor = feature_extractor_interface.feature_extractor_interface(
+            "osnet_x1_0", "F:\\n\\osnet_ibn_x1_0_imagenet.pth", "cpu"
+        )
+        db = database.database(-1, -1)
 
         while self.running:
             image_info = ingestion.get_frame_info()
 
-            #creating crops
-            crops_image = cropper.create_crops(image_info['img'], image_info['data'])
+            # creating crops
+            crops_image = cropper.create_crops(image_info["img"], image_info["data"])
 
-            #TODO deliver crops_image to feature extractor
+            # TODO deliver crops_image to feature extractor
+            feature_tensor = extractor.extract_images(crops_image)
+            db.update_list()
+            all_ids = db.update_tensorList(feature_tensor)
 
-            #draw BBs and IDs
-            self.update_image(image_info['img'], image_info['data'])
+            # draw BBs and IDs
+            self.update_image(image_info["img"], image_info["data"], all_ids)
 
             # image scaling
             width_1 = int(self.image.shape[1] * (scale_percent_1 / 100))
@@ -71,32 +93,36 @@ class OpencvGUI:
             cv2.imshow(self.window_name, rescaled_image)
             cv2.waitKey(1)
 
-            if cv2.getTrackbarPos('close', self.window_name) == 1:
+            if cv2.getTrackbarPos("close", self.window_name) == 1:
                 cv2.destroyAllWindows()
                 return
 
-            if image_info['frame_count_total'] <= image_info['current_frame']:
+            if image_info["frame_count_total"] <= image_info["current_frame"]:
                 end_time = time.time()
-                print('fps =' + str(image_info['frame_count_total'] / (end_time - start_time)))
+                print(
+                    "fps ="
+                    + str(image_info["frame_count_total"] / (end_time - start_time))
+                )
                 cv2.destroyAllWindows()
                 return
 
-    def update_image(self, image_path, coords):
+    def update_image(self, image_path, coords, ids):
         self.image = cv2.imread(image_path, cv2.IMREAD_COLOR)
         placeholder_id = 1
+        i = 0
         for row in coords.itertuples():
             placeholder_id = placeholder_id + 1
-            self.image = draw_on_image(self.image,
-                                       row[3],
-                                       row[4],
-                                       row[5],
-                                       row[6],
-                                       1)
+            if i == 0:
+                self.image = draw_on_image(
+                    self.image, row[3], row[4], row[5], row[6], ids[i]
+                )
+            i += 1
         return
 
 
-if __name__ == '__main__':
-    image_dir = './../datasets/MOT20-01/img1'
-    detection_file = './../datasets/MOT20-01/det/det.txt'
+if __name__ == "__main__":
+    # image_dir = "./../datasets/MOT20-01/img1"
+    image_dir = "F:/AS_Labor/AS_Labor/IW276WS21-P20/datasets/MOT20-01/img1"
+    detection_file = "F:\AS_Labor\AS_Labor\IW276WS21-P20/datasets/MOT20-01/det/det.txt"
     gui = OpencvGUI()
     gui.run(image_dir, detection_file)

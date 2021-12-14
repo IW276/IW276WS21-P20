@@ -19,10 +19,10 @@ class Person:
     def add_px_vector(self, new_tensor):
         if 0 == 0:
             pass  # _implement checkup if new_vector is a fitting vector!
-        print(str(new_tensor))
+        # print(str(new_tensor))
         new_vector = PxFeatureVector.PxFeatureVector(new_tensor)
         self.my_px_feature_vectors.append(new_vector)
-        age = 0
+        self.age = 0
         return 1
 
     def add_px_vectors(self, new_vectors):

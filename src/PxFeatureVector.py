@@ -7,12 +7,12 @@ class PxFeatureVector:
 
     def __init__(self, newTensor):
         # print(str(self.attributes))
-        print(newTensor)
+        # print(newTensor)
         # for testi in newTensor:
         #    tester = testi.item()
         #    print(str(tester))
         self.attributes = newTensor
-        print(str(self.attributes))
+        # print(str(self.attributes))
         pass
 
     def get_attribute(self, num):
@@ -33,11 +33,11 @@ class PxFeatureVector:
 
     def compare_px_vector(self, compare_with):
 
-        print(str(compare_with))
-        print(str(self.attributes))
+        # print(str(compare_with))
+        # print(str(self.attributes))
         euclid = distance.euclidean
         my_vector = self.attributes
-        print(my_vector)
+        # print(my_vector)
         # other_vector = compare_with.attributes
         dist2 = euclid(self.attributes, compare_with)
 

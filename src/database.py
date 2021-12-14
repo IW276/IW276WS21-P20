@@ -6,6 +6,7 @@ class database:
     last_used_i_d = 0  # actually used??
     threshhold = 200
     person_time_to_live = 5
+    next_free_id = -1
 
     def __init__(self, new_threshhold, time_to_live_for_persons):
         """Creates a database with the given threshholds.
@@ -19,11 +20,14 @@ class database:
             self.person_time_to_live = time_to_live_for_persons
 
     def update_tensorList(self, tensorList):
+        all_ids = []
         amount_of_tensors = 0
         for tensor in tensorList:
-            self.update_person_by_vector(tensor)
+            new_id = self.update_person_by_vector(tensor)
+            all_ids.append(new_id)
             amount_of_tensors += 1
-        return amount_of_tensors
+        # self.all_persons.sort()
+        return all_ids
 
     def update_person_by_vector(self, new_px_vector):
         best_rank = 9999
@@ -37,14 +41,14 @@ class database:
                     found_i_d = compare_with.get_i_d()
 
         if best_rank < self.threshhold:
-            print(str(found_i_d))
+            # print(str(found_i_d))
             self.all_persons[found_i_d].add_px_vector(new_px_vector)
-            return found_i_d
         else:
             new_person = Person.Person(self.__create_new_i_d())
             new_person.add_px_vector(new_px_vector)
             self.all_persons.append(new_person)
-        return -1
+            found_i_d = new_person.get_i_d()
+        return found_i_d
 
     def add_person(self, new_person):
         """First checks if this person already exists.
@@ -90,12 +94,14 @@ class database:
 
     def __create_new_i_d(self):
         """Returns the next integer that is not in use as an ID."""
-        next_i_d = 0
+        # next_i_d = 0
 
-        for person in self.all_persons:
-            if person.get_i_d() == next_i_d:
-                next_i_d += 1
-        return next_i_d
+        # for person in self.all_persons:
+        #    if person.get_i_d() == next_i_d:
+        #        next_i_d += 1
+        # return next_i_d
+        self.next_free_id += 1
+        return self.next_free_id
 
     def __search_person(self, searched_person):
         """Searches for the given person, returns:
