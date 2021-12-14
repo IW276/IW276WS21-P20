@@ -1,6 +1,7 @@
 import torch
-from torch.functional import Tensor
-from torchreid.utils import FeatureExtractor
+
+# from torch.functional import Tensor
+# from torchreid.utils import FeatureExtractor
 import pathlib
 
 # print("Features coming now:")
@@ -33,7 +34,7 @@ class feature_extractor_interface:
                 device_to_use = "gpu"
 
         try:
-            test = self.extractor = FeatureExtractor(
+            test = self.extractor = torch.FeatureExtractor(
                 model_name=extractor_model,  # extractor_model,
                 model_path=path_to_model,  # path_to_model,
                 # model_path="F:\\n\\shufflenet-bee1b265.pth.tar",
@@ -49,7 +50,7 @@ class feature_extractor_interface:
                 + "\\\\osnet_ain_x0_25_imagenet.pyth"
             )
             default_model = "osnet_x0_25"
-            test = self.extractor = FeatureExtractor(
+            test = self.extractor = torch.FeatureExtractor(
                 default_model, default_path, device="cpu"
             )
 
