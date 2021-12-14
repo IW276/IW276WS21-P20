@@ -51,32 +51,25 @@ class OpencvGUI:
 
         cv2.namedWindow(self.window_name)
         cv2.createTrackbar('close', self.window_name, 0, 1, f)
-        cv2.createTrackbar('show crops', self.window_name, 0, 1, f)
 
         while self.running:
             image_info = ingestion.get_frame_info()
 
-            #showing crops for demo purposes
-            if cv2.getTrackbarPos('show crops', self.window_name) == 1:
-                crops_image = cropper.create_crops(image_info['img'].__str__(), image_info['data'])
-                width_1 = int(self.image.shape[1] * (scale_percent_1 / 100))
-                height_1 = int(self.image.shape[0] * (scale_percent_1 / 100))
-                dim_1 = (width_1, height_1)
-                #rescaled_image = cv2.resize(crops_image, dim_1, interpolation=cv2.INTER_AREA)
-                cv2.imshow(self.window_name, crops_image[0])
-                cv2.waitKey(200)
+            #creating crops
+            crops_image = cropper.create_crops(image_info['img'], image_info['data'])
 
-            else:
-                # draw BBs
-                self.update_image(image_info['img'], image_info['data'])
+            #TODO deliver crops_image to feature extractor
 
-                # image scaling
-                width_1 = int(self.image.shape[1] * (scale_percent_1 / 100))
-                height_1 = int(self.image.shape[0] * (scale_percent_1 / 100))
-                dim_1 = (width_1, height_1)
-                rescaled_image = cv2.resize(self.image, dim_1, interpolation=cv2.INTER_AREA)
-                cv2.imshow(self.window_name, rescaled_image)
-                cv2.waitKey(1)
+            #draw BBs and IDs
+            self.update_image(image_info['img'], image_info['data'])
+
+            # image scaling
+            width_1 = int(self.image.shape[1] * (scale_percent_1 / 100))
+            height_1 = int(self.image.shape[0] * (scale_percent_1 / 100))
+            dim_1 = (width_1, height_1)
+            rescaled_image = cv2.resize(self.image, dim_1, interpolation=cv2.INTER_AREA)
+            cv2.imshow(self.window_name, rescaled_image)
+            cv2.waitKey(1)
 
             if cv2.getTrackbarPos('close', self.window_name) == 1:
                 cv2.destroyAllWindows()
@@ -89,7 +82,7 @@ class OpencvGUI:
                 return
 
     def update_image(self, image_path, coords):
-        self.image = cv2.imread(image_path.__str__(), cv2.IMREAD_COLOR)
+        self.image = cv2.imread(image_path, cv2.IMREAD_COLOR)
         placeholder_id = 1
         for row in coords.itertuples():
             placeholder_id = placeholder_id + 1
