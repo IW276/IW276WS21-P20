@@ -1,7 +1,7 @@
 import torch
 
 # from torch.functional import Tensor
-# from torchreid.utils import FeatureExtractor
+from torchreid.utils import FeatureExtractor
 import pathlib
 
 # print("Features coming now:")
@@ -34,7 +34,7 @@ class feature_extractor_interface:
                 device_to_use = "gpu"
 
         try:
-            test = self.extractor = torch.FeatureExtractor(
+            test = self.extractor = FeatureExtractor(
                 model_name=extractor_model,  # extractor_model,
                 model_path=path_to_model,  # path_to_model,
                 # model_path="F:\\n\\shufflenet-bee1b265.pth.tar",
@@ -44,15 +44,21 @@ class feature_extractor_interface:
                 device=device_to_use,
             )
         except:
-            base_path = pathlib.Path(__file__).parent.resolve()
-            default_path = (
-                str(base_path).replace("\\", "\\\\")
-                + "\\\\osnet_ain_x0_25_imagenet.pyth"
-            )
             default_model = "osnet_x0_25"
-            test = self.extractor = torch.FeatureExtractor(
-                default_model, default_path, device="cpu"
-            )
+
+            base_path = pathlib.Path(".")  # pathlib.Path(__file__).parent.resolve()
+            for default_path in base_path.iterdir():
+                print(str(default_path))
+                if default_path.is_file() & ("osnet_ain_x0_25" in str(default_path)):
+                    print(str(default_path))
+
+                    test = self.extractor = FeatureExtractor(
+                        default_model, default_path, device="cpu"
+                    )
+                    # default_path = (
+                    #    str(base_path).replace("\\", "\\\\")
+                    #    + "\\\\osnet_ain_x0_25_imagenet.pyth"
+                    # )
 
         print(str(test))
 
