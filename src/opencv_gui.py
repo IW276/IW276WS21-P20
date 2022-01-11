@@ -112,17 +112,17 @@ class OpencvGUI:
         i = 0
         for row in coords.itertuples():
             placeholder_id = placeholder_id + 1
-            if i == 0:
-                self.image = draw_on_image(
-                    self.image, row[3], row[4], row[5], row[6], ids[i]
+            self.image = draw_on_image(
+                self.image, row[3], row[4], row[5], row[6], ids[i]
                 )
             i += 1
         return
 
 
 if __name__ == "__main__":
-    # image_dir = "./../datasets/MOT20-01/img1"
-    image_dir = "F:/AS_Labor/AS_Labor/IW276WS21-P20/datasets/MOT20-01/img1"
-    detection_file = "F:\AS_Labor\AS_Labor\IW276WS21-P20/datasets/MOT20-01/det/det.txt"
+    image_dir = "./../datasets/MOT20-01/img1"
+    # image_dir = "F:/AS_Labor/AS_Labor/IW276WS21-P20/datasets/MOT20-01/img1"
+    detection_file = "./../datasets/MOT20-01/det/det.txt"
+    # detection_file = "F:\AS_Labor\AS_Labor\IW276WS21-P20/datasets/MOT20-01/det/det.txt"
     gui = OpencvGUI()
     gui.run(image_dir, detection_file)
