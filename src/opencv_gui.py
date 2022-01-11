@@ -112,10 +112,10 @@ class OpencvGUI:
         i = 0
         for row in coords.itertuples():
             placeholder_id = placeholder_id + 1
-            if i == 0:
-                self.image = draw_on_image(
-                    self.image, row[3], row[4], row[5], row[6], ids[i]
-                )
+            # if i == 0:
+            self.image = draw_on_image(
+                self.image, row[3], row[4], row[5], row[6], ids[i]
+            )
             i += 1
         return
 

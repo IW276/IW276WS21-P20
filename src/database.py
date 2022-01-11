@@ -1,4 +1,4 @@
-import Person
+from Person import Person
 
 
 class database:
@@ -45,7 +45,8 @@ class database:
             position = self.__search_person_position(found_i_d)
             self.all_persons[position].add_px_vector(new_px_vector)
         else:
-            new_person = Person.Person(self.__create_new_i_d())
+            new_person = None
+            new_person = Person(self.__create_new_i_d())
             new_person.add_px_vector(new_px_vector)
             self.all_persons.append(new_person)
             found_i_d = new_person.get_i_d()
@@ -88,7 +89,7 @@ class database:
         if id < 0:
             return id
         else:
-            del self.all_persons[id]
+            self.all_persons.remove(person_to_delete)
             return id
 
         return -1
@@ -126,7 +127,7 @@ class database:
         return -1
 
     def __search_person_position(self, id):
-        position = -1
+        position = 0
 
         for checkPerson in self.all_persons:
             if id == checkPerson.get_i_d():

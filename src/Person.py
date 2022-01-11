@@ -3,12 +3,17 @@ import PxFeatureVector
 
 
 class Person:
-    my_px_feature_vectors = collections.deque(maxlen=5)
+    my_px_feature_vectors = None
     id = -1
     age = 0
+    x_pos = -1
+    x_length = -1
+    y_pos = -1
+    y_length = -1
 
     def __init__(self, my_i_d):
         self.id = my_i_d
+        self.my_px_feature_vectors = collections.deque(maxlen=5)
 
     def get_px_vector(self, num):
         return self.my_px_feature_vectors.index(num)
@@ -28,6 +33,7 @@ class Person:
     def add_px_vectors(self, new_vectors):
         for new_vector in new_vectors:
             self.add_px_vector(new_vector)
+        age = 0
 
     def compare_me_to_px_vector(self, px_vector):
         average_ranking = 0
