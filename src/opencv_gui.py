@@ -67,7 +67,7 @@ class OpencvGUI:
         cv2.namedWindow(self.window_name)
         cv2.createTrackbar("close", self.window_name, 0, 1, f)
         extractor = feature_extractor_interface.feature_extractor_interface(
-            "osnet_x1_0", "F:\\n\\osnet_ibn_x1_0_imagenet.pth", "cpu"
+            "osnet_x0_25", "F:\\n\\osnet_x0_25_imagenet.pth", "cuda"
         )
         db = database.database(-1, -1)
 

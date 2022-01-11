@@ -27,40 +27,21 @@ class feature_extractor_interface:
         #     )
         #     extractor_model = "osnet_x0_25"
 
-        if not "cpu" in device_to_use:
-            if not torch.cuda.is_available:
-                device_to_use = "cpu"
-            if not "gpu" in device_to_use:
-                device_to_use = "gpu"
-
         try:
-            test = self.extractor = FeatureExtractor(
+            self.extractor = FeatureExtractor(
                 model_name=extractor_model,  # extractor_model,
                 model_path=path_to_model,  # path_to_model,
-                # model_path="F:\\n\\shufflenet-bee1b265.pth.tar",
-                # model_path="F:\\n\\mlfn-9cb5a267.pth.tar",
-                # model_path="F:\\n\\osnet_ibn_x1_0_imagenet.pth",
-                # model_path="F:\\n\\shufflenet-bee1b265.pth.tar",
-                device=device_to_use,
+                device=device_to_use
             )
-        except:
-            default_model = "osnet_x0_25"
-
-            base_path = pathlib.Path(".")  # pathlib.Path(__file__).parent.resolve()
-            for default_path in base_path.iterdir():
-                print(str(default_path))
-                if default_path.is_file() & ("osnet_ain_x0_25" in str(default_path)):
-                    print(str(default_path))
-
-                    test = self.extractor = FeatureExtractor(
-                        default_model, default_path, device="cpu"
-                    )
+        except Exception as e:
+            print(e)
+            self.extractor = FeatureExtractor(
+                "osnet_x0_25", "./../osnet_ain_x0_25_imagenet.pyth", device="cpu"
+            )
                     # default_path = (
                     #    str(base_path).replace("\\", "\\\\")
                     #    + "\\\\osnet_ain_x0_25_imagenet.pyth"
                     # )
-
-        print(str(test))
 
     def extract_images(self, list_of_images):
 
