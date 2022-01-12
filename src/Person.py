@@ -40,7 +40,9 @@ class Person:
         amount_of_frames = 0
 
         for compare_with in self.my_px_feature_vectors:
+
             average_ranking += compare_with.compare_px_vector(px_vector)
+
             amount_of_frames += 1
         if amount_of_frames == 0:
             return -1
