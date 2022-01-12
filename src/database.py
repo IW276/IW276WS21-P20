@@ -34,9 +34,6 @@ class database:
             position_t = 0
             best_position = 0
 
-            if amount_of_tensors == 27:
-                print("check")
-
             for compare_with in self.all_persons:
                 if compare_with.get_age() != 0:
                     new_rank = compare_with.compare_me_to_px_vector(tensor)

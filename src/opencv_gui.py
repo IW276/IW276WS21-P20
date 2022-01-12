@@ -120,7 +120,7 @@ class OpencvGUI:
             all_ids = db.update_tensorList(feature_tensor)
 
             # draw BBs and IDs
-            self.update_image(image_info["img"], image_info["data"], all_ids)
+            # self.update_image(image_info["img"], image_info["data"], all_ids)
             # def update_image(self, image_path, coords, ids):
             self.image = cv2.imread(image_info["img"], cv2.IMREAD_COLOR)
             placeholder_id = 1
