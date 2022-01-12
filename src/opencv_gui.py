@@ -3,9 +3,11 @@ import time
 import cv2
 import ImgIngest
 import numpy
-import cropper
+
+# import cropper
 import feature_extractor_interface
 import database
+from cv2 import imread, IMREAD_COLOR
 
 
 def draw_on_image(image_to_edit, left, top, width, height, person_id):
@@ -75,7 +77,20 @@ class OpencvGUI:
             image_info = ingestion.get_frame_info()
 
             # creating crops
-            crops_image = cropper.create_crops(image_info["img"], image_info["data"])
+            # def create_crops(image_path, crop_coordinates):
+
+            resulting_crops = []
+            image = imread(image_info["img"], IMREAD_COLOR)
+            for row in image_info["data"].itertuples():
+                top = row[3]
+                left = row[4]
+                height = row[5]
+                width = row[6]
+                resulting_crops.append(
+                    image[left : left + width, top : top + height].copy()
+                )
+
+            crops_image = resulting_crops
 
             # TODO deliver crops_image to feature extractor
             feature_tensor = extractor.extract_images(crops_image)
