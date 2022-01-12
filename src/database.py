@@ -28,102 +28,151 @@ class database:
         all_ids = []
         amount_of_tensors = 0
         for tensor in tensorList:
-            new_id = self.update_person_by_vector(tensor)
-            all_ids.append(new_id)
+
+            best_rank = 9999
+            found_i_d = -1
+
+            for compare_with in self.all_persons:
+                if compare_with.get_age() != 0:
+                    new_rank = compare_with.compare_me_to_px_vector(tensor)
+                    if new_rank < best_rank:
+                        best_rank = new_rank
+                        found_i_d = compare_with.get_i_d()
+
+            if best_rank < self.threshhold:
+                # print(str(found_i_d))
+
+                position = 0
+
+                for checkPerson in self.all_persons:
+                    if found_i_d == checkPerson.get_i_d():
+                        break
+                    else:
+                        position += 1
+
+                # position = self.__search_person_position(found_i_d)
+                self.all_persons[position].add_px_vector(tensor)
+            else:
+                new_person = None
+
+                count = self.next_free_id
+
+                while count <= len(self.free_ids):
+                    if count == len(self.free_ids):
+                        self.free_ids.extend(numpy.full(25, 0))
+                        # self.next_free_id = count
+
+                    if self.free_ids[count] == 0:
+                        self.free_ids[count] = 1
+                        self.next_free_id = count + 1
+                    break
+                else:
+                    count += 1
+
+                # return self.__create_new_i_d()
+                new_person = Person(count)
+                # new_person = Person(self.__create_new_i_d())
+                new_person.add_px_vector(tensor)
+                self.all_persons.append(new_person)
+                found_i_d = new_person.get_i_d()
+            # return found_i_d
+            # new_id = found_i_d #= self.update_person_by_vector(tensor)
+            # all_ids.append(new_id)
+            all_ids.append(found_i_d)
             amount_of_tensors += 1
         # self.all_persons.sort()
         return all_ids
 
-    def update_person_by_vector(self, new_px_vector):
-        best_rank = 9999
-        found_i_d = -1
+    # def update_person_by_vector(self, new_px_vector):
+    #     best_rank = 9999
+    #     found_i_d = -1
 
-        for compare_with in self.all_persons:
-            if compare_with.get_age() != 0:
-                new_rank = compare_with.compare_me_to_px_vector(new_px_vector)
-                if new_rank < best_rank:
-                    best_rank = new_rank
-                    found_i_d = compare_with.get_i_d()
+    #     for compare_with in self.all_persons:
+    #         if compare_with.get_age() != 0:
+    #             new_rank = compare_with.compare_me_to_px_vector(new_px_vector)
+    #             if new_rank < best_rank:
+    #                 best_rank = new_rank
+    #                 found_i_d = compare_with.get_i_d()
 
-        if best_rank < self.threshhold:
-            # print(str(found_i_d))
+    #     if best_rank < self.threshhold:
+    #         # print(str(found_i_d))
 
-            position = 0
+    #         position = 0
 
-            for checkPerson in self.all_persons:
-                if found_i_d == checkPerson.get_i_d():
-                    break
-                else:
-                    position += 1
+    #         for checkPerson in self.all_persons:
+    #             if found_i_d == checkPerson.get_i_d():
+    #                 break
+    #             else:
+    #                 position += 1
 
-            # position = self.__search_person_position(found_i_d)
-            self.all_persons[position].add_px_vector(new_px_vector)
-        else:
-            new_person = None
+    #         # position = self.__search_person_position(found_i_d)
+    #         self.all_persons[position].add_px_vector(new_px_vector)
+    #     else:
+    #         new_person = None
 
-            count = self.next_free_id
+    #         count = self.next_free_id
 
-            while count <= len(self.free_ids):
-                if count == len(self.free_ids):
-                    self.free_ids.extend(numpy.full(25, 0))
-                    # self.next_free_id = count
+    #         while count <= len(self.free_ids):
+    #             if count == len(self.free_ids):
+    #                 self.free_ids.extend(numpy.full(25, 0))
+    #                 # self.next_free_id = count
 
-                if self.free_ids[count] == 0:
-                    self.free_ids[count] = 1
-                    self.next_free_id = count + 1
-                break
-            else:
-                count += 1
+    #             if self.free_ids[count] == 0:
+    #                 self.free_ids[count] = 1
+    #                 self.next_free_id = count + 1
+    #             break
+    #         else:
+    #             count += 1
 
-            # return self.__create_new_i_d()
-            new_person = Person(count)
-            # new_person = Person(self.__create_new_i_d())
-            new_person.add_px_vector(new_px_vector)
-            self.all_persons.append(new_person)
-            found_i_d = new_person.get_i_d()
-        return found_i_d
+    #         # return self.__create_new_i_d()
+    #         new_person = Person(count)
+    #         # new_person = Person(self.__create_new_i_d())
+    #         new_person.add_px_vector(new_px_vector)
+    #         self.all_persons.append(new_person)
+    #         found_i_d = new_person.get_i_d()
+    #     return found_i_d
 
-        # def add_person(self, new_person):
-        #     """First checks if this person already exists.
-        #     If several existing persons match the best match (aka highest ranked)
-        #     will be picked and updated with the vectors from newPerson.
-        #     If no match was found a new person will be created and added.
-        #     """
-        #     oldID = self.__search_person(new_person)
+    # def add_person(self, new_person):
+    #     """First checks if this person already exists.
+    #     If several existing persons match the best match (aka highest ranked)
+    #     will be picked and updated with the vectors from newPerson.
+    #     If no match was found a new person will be created and added.
+    #     """
+    #     oldID = self.__search_person(new_person)
 
-        #     if oldID < 0:
-        #         next_i_d = self.__create_new_i_d()
-        #         new_person.set_i_d(next_i_d)
-        #         self.all_persons.insert(next_i_d, new_person)
-        #         oldID = next_i_d
-        #     else:
-        #         person_to_update = self.all_persons[oldID]
-        #         person_to_update.add_px_vectors(self, new_person.get_px_vectors())
+    #     if oldID < 0:
+    #         next_i_d = self.__create_new_i_d()
+    #         new_person.set_i_d(next_i_d)
+    #         self.all_persons.insert(next_i_d, new_person)
+    #         oldID = next_i_d
+    #     else:
+    #         person_to_update = self.all_persons[oldID]
+    #         person_to_update.add_px_vectors(self, new_person.get_px_vectors())
 
-        #     return oldID
+    #     return oldID
 
-        # def delete_person_by_vector(self, px_vector):
-        #     """Checks if a person is similar enough to the given person to be declared as the same.
-        #     If more exist, the closest (aka highest ranked) will be picked and deleted.
-        #     """
+    # def delete_person_by_vector(self, px_vector):
+    #     """Checks if a person is similar enough to the given person to be declared as the same.
+    #     If more exist, the closest (aka highest ranked) will be picked and deleted.
+    #     """
 
-        #     person_to_delete = Person.Person(-1)
-        #     person_to_delete.add_px_vector(px_vector)
-        #     return self.delete_person(person_to_delete)
+    #     person_to_delete = Person.Person(-1)
+    #     person_to_delete.add_px_vector(px_vector)
+    #     return self.delete_person(person_to_delete)
 
-        # def delete_person(self, person_to_delete):
-        #     """Checks if a person's vectors are in average similar enough to the given vector
-        #     to be declared as another vector of this person.
-        #     If more exist, the closest (aka highest ranked) will be picked and deleted.
-        #     """
-        #     id = self.__search_person(person_to_delete)
-        #     if id < 0:
-        #         return id
-        #     else:
-        #         self.all_persons.remove(person_to_delete)
-        #         return id
+    # def delete_person(self, person_to_delete):
+    #     """Checks if a person's vectors are in average similar enough to the given vector
+    #     to be declared as another vector of this person.
+    #     If more exist, the closest (aka highest ranked) will be picked and deleted.
+    #     """
+    #     id = self.__search_person(person_to_delete)
+    #     if id < 0:
+    #         return id
+    #     else:
+    #         self.all_persons.remove(person_to_delete)
+    #         return id
 
-        # return -1
+    # return -1
 
     # def __create_new_i_d(self):
     #     """Returns the next integer that is not in use as an ID."""
