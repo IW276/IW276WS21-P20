@@ -5,9 +5,10 @@ import ImgIngest
 import numpy
 
 # import cropper
-import feature_extractor_interface
+# import feature_extractor_interface
 import database
 from cv2 import imread, IMREAD_COLOR
+from torchreid.utils import FeatureExtractor
 
 
 def draw_on_image(image_to_edit, left, top, width, height, person_id):
@@ -51,6 +52,7 @@ class OpencvGUI:
     image = None
     window_name = "Personenidentifikation mit rapid Re-Identification"
     running = True
+    extractor = 0  # Added as cover for inlining feature_extractor_interface
 
     def close(self, *args):
         self.running = False
@@ -68,9 +70,26 @@ class OpencvGUI:
 
         cv2.namedWindow(self.window_name)
         cv2.createTrackbar("close", self.window_name, 0, 1, f)
-        extractor = feature_extractor_interface.feature_extractor_interface(
-            "osnet_x0_25", "F:\\n\\osnet_x0_25_imagenet.pth", "cuda"
-        )
+        # extractor = feature_extractor_interface.feature_extractor_interface(
+        #     "osnet_x0_25", "F:\\n\\osnet_x0_25_imagenet.pth", "cuda"
+        # )
+
+        try:
+            self.extractor = FeatureExtractor(
+                model_name="osnet_x0_25",  # extractor_model,
+                model_path="F:\\n\\osnet_x0_25_imagenet.pth",  # path_to_model,
+                device="cuda",
+            )
+        except Exception as e:
+            print(e)
+            self.extractor = FeatureExtractor(
+                "osnet_x0_25", "./../osnet_ain_x0_25_imagenet.pyth", device="cpu"
+            )
+            # default_path = (
+            #    str(base_path).replace("\\", "\\\\")
+            #    + "\\\\osnet_ain_x0_25_imagenet.pyth"
+            # )
+
         db = database.database(-1, -1)
 
         while self.running:
@@ -93,7 +112,10 @@ class OpencvGUI:
             crops_image = resulting_crops
 
             # TODO deliver crops_image to feature extractor
-            feature_tensor = extractor.extract_images(crops_image)
+            feature_tensor = self.extractor(crops_image)
+
+            # def extract_images(self, list_of_images):
+
             db.update_list()
             all_ids = db.update_tensorList(feature_tensor)
 
