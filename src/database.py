@@ -1,12 +1,14 @@
 from Person import Person
+import numpy
 
 
 class database:
     all_persons = []
+    free_ids = []
     last_used_i_d = 0  # actually used??
     threshhold = 200
     person_time_to_live = 5
-    next_free_id = -1
+    next_free_id = 0
 
     def __init__(self, new_threshhold, time_to_live_for_persons):
         """Creates a database with the given threshholds.
@@ -18,6 +20,9 @@ class database:
 
         if time_to_live_for_persons > 0 & time_to_live_for_persons < 100:
             self.person_time_to_live = time_to_live_for_persons
+
+        self.free_ids = numpy.full(50, 0)
+        print(str(self.free_ids))
 
     def update_tensorList(self, tensorList):
         all_ids = []
@@ -96,14 +101,28 @@ class database:
 
     def __create_new_i_d(self):
         """Returns the next integer that is not in use as an ID."""
+
+        count = self.next_free_id
+
+        while count < len(self.free_ids):
+            if self.free_ids[count] == 0:
+                self.free_ids[count] = 1
+                self.next_free_id = count + 1
+                return count
+            else:
+                count += 1
+
+        self.free_ids.extend(numpy.full(25, 0))
+        self.next_free_id = count
+        return self.__create_new_i_d()
         # next_i_d = 0
 
         # for person in self.all_persons:
         #    if person.get_i_d() == next_i_d:
         #        next_i_d += 1
         # return next_i_d
-        self.next_free_id += 1
-        return self.next_free_id
+        # self.next_free_id += 1
+        # return self.next_free_id
 
     def __search_person(self, searched_person):
         """Searches for the given person, returns:
@@ -143,6 +162,8 @@ class database:
             age = check_person.get_age()
             if age > self.person_time_to_live:
                 self.all_persons.remove(check_person)  # another try, maybe stable?
+                self.next_free_id = check_person.get_i_d()
+                self.free_ids[self.next_free_id] = 0
                 # del self.all_persons[check_person.get_i_d()]
             else:
                 check_person.increase_age()
