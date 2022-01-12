@@ -46,12 +46,14 @@ class Person:
 
             # print(str(compare_with))
             # print(str(self.attributes))
-            euclid = distance.euclidean
+            # euclid = distance.euclidean(compare_with, px_vector)
             # my_vector = self.attributes
             # print(my_vector)
             # other_vector = compare_with.attributes
             # dist2 = euclid(self.attributes, compare_with)
-            average_ranking += euclid(compare_with, px_vector)
+            average_ranking += distance.euclidean(
+                compare_with, px_vector
+            )  # euclid(compare_with, px_vector)
             # average_ranking += compare_with.compare_px_vector(px_vector)
 
             amount_of_frames += 1
