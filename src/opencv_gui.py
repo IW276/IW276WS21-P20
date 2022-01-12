@@ -121,6 +121,17 @@ class OpencvGUI:
 
             # draw BBs and IDs
             self.update_image(image_info["img"], image_info["data"], all_ids)
+            # def update_image(self, image_path, coords, ids):
+            self.image = cv2.imread(image_info["img"], cv2.IMREAD_COLOR)
+            placeholder_id = 1
+            i = 0
+            for row in image_info["data"].itertuples():
+                placeholder_id = placeholder_id + 1
+                self.image = draw_on_image(
+                    self.image, row[3], row[4], row[5], row[6], all_ids[i]
+                )
+                i += 1
+            # return
 
             # image scaling
             width_1 = int(self.image.shape[1] * (scale_percent_1 / 100))
@@ -143,17 +154,17 @@ class OpencvGUI:
                 cv2.destroyAllWindows()
                 return
 
-    def update_image(self, image_path, coords, ids):
-        self.image = cv2.imread(image_path, cv2.IMREAD_COLOR)
-        placeholder_id = 1
-        i = 0
-        for row in coords.itertuples():
-            placeholder_id = placeholder_id + 1
-            self.image = draw_on_image(
-                self.image, row[3], row[4], row[5], row[6], ids[i]
-            )
-            i += 1
-        return
+    # def update_image(self, image_path, coords, ids):
+    #     self.image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+    #     placeholder_id = 1
+    #     i = 0
+    #     for row in coords.itertuples():
+    #         placeholder_id = placeholder_id + 1
+    #         self.image = draw_on_image(
+    #             self.image, row[3], row[4], row[5], row[6], ids[i]
+    #         )
+    #         i += 1
+    #     return
 
 
 if __name__ == "__main__":
