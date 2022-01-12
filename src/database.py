@@ -31,6 +31,11 @@ class database:
 
             best_rank = 9999
             found_i_d = -1
+            position_t = 0
+            best_position = 0
+
+            if amount_of_tensors == 27:
+                print("check")
 
             for compare_with in self.all_persons:
                 if compare_with.get_age() != 0:
@@ -38,20 +43,24 @@ class database:
                     if new_rank < best_rank:
                         best_rank = new_rank
                         found_i_d = compare_with.get_i_d()
+                        best_position = position_t
+                position_t += 1
 
             if best_rank < self.threshhold:
                 # print(str(found_i_d))
 
-                position = 0
+                # position = 0
 
-                for checkPerson in self.all_persons:
-                    if found_i_d == checkPerson.get_i_d():
-                        break
-                    else:
-                        position += 1
+                # for checkPerson in self.all_persons:
+                #     if found_i_d == checkPerson.get_i_d():
+                #         break
+                #     else:
+                #         position += 1
 
                 # position = self.__search_person_position(found_i_d)
-                self.all_persons[position].add_px_vector(tensor)
+                # if best_position != position:
+                #     print("Error:" + str(best_position) + " : " + str(position))
+                self.all_persons[best_position].add_px_vector(tensor)
             else:
                 new_person = None
 
@@ -65,9 +74,9 @@ class database:
                     if self.free_ids[count] == 0:
                         self.free_ids[count] = 1
                         self.next_free_id = count + 1
-                    break
-                else:
-                    count += 1
+                        break
+                    else:
+                        count += 1
 
                 # return self.__create_new_i_d()
                 new_person = Person(count)
