@@ -47,7 +47,16 @@ class database:
 
         if best_rank < self.threshhold:
             # print(str(found_i_d))
-            position = self.__search_person_position(found_i_d)
+
+            position = 0
+
+            for checkPerson in self.all_persons:
+                if found_i_d == checkPerson.get_i_d():
+                    break
+                else:
+                    position += 1
+
+            # position = self.__search_person_position(found_i_d)
             self.all_persons[position].add_px_vector(new_px_vector)
         else:
             new_person = None
@@ -145,15 +154,15 @@ class database:
     #         return found_i_d
     #     return -1
 
-    def __search_person_position(self, id):
-        position = 0
+    # def __search_person_position(self, id):
+    #     position = 0
 
-        for checkPerson in self.all_persons:
-            if id == checkPerson.get_i_d():
-                return position
-            else:
-                position += 1
-        return -1
+    #     for checkPerson in self.all_persons:
+    #         if id == checkPerson.get_i_d():
+    #             return position
+    #         else:
+    #             position += 1
+    #     return -1
 
     def update_list(self):
         """Updates all persons, meaning every person that hasn't been detected since X frames, will be deleted."""
