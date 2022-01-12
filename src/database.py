@@ -60,7 +60,24 @@ class database:
             self.all_persons[position].add_px_vector(new_px_vector)
         else:
             new_person = None
-            new_person = Person(self.__create_new_i_d())
+
+            count = self.next_free_id
+
+            while count <= len(self.free_ids):
+                if count == len(self.free_ids):
+                    self.free_ids.extend(numpy.full(25, 0))
+                    # self.next_free_id = count
+
+                if self.free_ids[count] == 0:
+                    self.free_ids[count] = 1
+                    self.next_free_id = count + 1
+                break
+            else:
+                count += 1
+
+            # return self.__create_new_i_d()
+            new_person = Person(count)
+            # new_person = Person(self.__create_new_i_d())
             new_person.add_px_vector(new_px_vector)
             self.all_persons.append(new_person)
             found_i_d = new_person.get_i_d()
@@ -106,32 +123,32 @@ class database:
         #         self.all_persons.remove(person_to_delete)
         #         return id
 
-        return -1
+        # return -1
 
-    def __create_new_i_d(self):
-        """Returns the next integer that is not in use as an ID."""
+    # def __create_new_i_d(self):
+    #     """Returns the next integer that is not in use as an ID."""
 
-        count = self.next_free_id
+    #     count = self.next_free_id
 
-        while count < len(self.free_ids):
-            if self.free_ids[count] == 0:
-                self.free_ids[count] = 1
-                self.next_free_id = count + 1
-                return count
-            else:
-                count += 1
+    #     while count < len(self.free_ids):
+    #         if self.free_ids[count] == 0:
+    #             self.free_ids[count] = 1
+    #             self.next_free_id = count + 1
+    #             return count
+    #         else:
+    #             count += 1
 
-        self.free_ids.extend(numpy.full(25, 0))
-        self.next_free_id = count
-        return self.__create_new_i_d()
-        # next_i_d = 0
+    #     self.free_ids.extend(numpy.full(25, 0))
+    #     self.next_free_id = count
+    #     return self.__create_new_i_d()
+    # next_i_d = 0
 
-        # for person in self.all_persons:
-        #    if person.get_i_d() == next_i_d:
-        #        next_i_d += 1
-        # return next_i_d
-        # self.next_free_id += 1
-        # return self.next_free_id
+    # for person in self.all_persons:
+    #    if person.get_i_d() == next_i_d:
+    #        next_i_d += 1
+    # return next_i_d
+    # self.next_free_id += 1
+    # return self.next_free_id
 
     # def __search_person(self, searched_person):
     #     """Searches for the given person, returns:
