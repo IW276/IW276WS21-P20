@@ -70,6 +70,9 @@ class OpencvGUI:
         start_time = time.time()
         scale_percent_1 = 80
 
+        current_frame = 0
+        total_amount_frames = ingestion.total_number_of_frames
+
         cv2.namedWindow(self.window_name)
         cv2.createTrackbar("close", self.window_name, 0, 1, f)
         # extractor = feature_extractor_interface.feature_extractor_interface(
@@ -171,12 +174,11 @@ class OpencvGUI:
                 cv2.destroyAllWindows()
                 return
 
-            if image_info["frame_count_total"] <= image_info["current_frame"]:
+            current_frame += 1
+            if total_amount_frames <= current_frame:
+                # if image_info["frame_count_total"] <= image_info["current_frame"]:
                 end_time = time.time()
-                print(
-                    "fps ="
-                    + str(image_info["frame_count_total"] / (end_time - start_time))
-                )
+                print("fps =" + str(total_amount_frames / (end_time - start_time)))
                 cv2.destroyAllWindows()
                 return
 
