@@ -40,27 +40,27 @@ class Person:
 
     def compare_me_to_px_vector(self, px_vector):
 
-        average_ranking = 0
-        amount_of_frames = 0
-
-        for compare_with in self.my_px_feature_vectors:
-            average_ranking += distance.euclidean(compare_with, px_vector)
-            amount_of_frames += 1
-
-        if amount_of_frames == 0:
-            return -1
-        return average_ranking / amount_of_frames
-
         # average_ranking = 0
         # amount_of_frames = 0
 
         # for compare_with in self.my_px_feature_vectors:
-        #     average_ranking += compare_with
+        #     average_ranking += distance.euclidean(compare_with, px_vector)
         #     amount_of_frames += 1
 
         # if amount_of_frames == 0:
         #     return -1
-        # return distance.euclidean(average_ranking / amount_of_frames, px_vector)
+        # return average_ranking / amount_of_frames
+
+        average_ranking = 0
+        amount_of_frames = 0
+
+        for compare_with in self.my_px_feature_vectors:
+            average_ranking += compare_with
+            amount_of_frames += 1
+
+        if amount_of_frames == 0:
+            return -1
+        return distance.euclidean(average_ranking / amount_of_frames, px_vector)
 
     def get_age(self):
         return self.age
