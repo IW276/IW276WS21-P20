@@ -10,6 +10,8 @@ import database
 from cv2 import imread, IMREAD_COLOR
 from torchreid.utils import FeatureExtractor
 
+import time
+
 
 def draw_on_image(image_to_edit, left, top, width, height, person_id):
     red = person_id * 30 % 255
@@ -94,6 +96,7 @@ class OpencvGUI:
 
         while self.running:
             image_info = ingestion.get_frame_info()
+            start = time.time()
 
             # creating crops
             # def create_crops(image_path, crop_coordinates):
@@ -109,16 +112,17 @@ class OpencvGUI:
                     image[left : left + width, top : top + height].copy()
                 )
 
+            time_images = time.time()
             crops_image = resulting_crops
 
             # TODO deliver crops_image to feature extractor
             feature_tensor = self.extractor(crops_image)
-
+            time_features = time.time()
             # def extract_images(self, list_of_images):
 
             db.update_list()
             all_ids = db.update_tensorList(feature_tensor)
-
+            time_db = time.time()
             # draw BBs and IDs
             # self.update_image(image_info["img"], image_info["data"], all_ids)
             # def update_image(self, image_path, coords, ids):
@@ -140,6 +144,28 @@ class OpencvGUI:
             rescaled_image = cv2.resize(self.image, dim_1, interpolation=cv2.INTER_AREA)
             cv2.imshow(self.window_name, rescaled_image)
             cv2.waitKey(1)
+            time_draw = time.time()
+            with open("fpscheckerfile.txt", "a") as the_file:
+
+                time_draw -= time_db
+                time_db -= time_features
+                time_features -= time_images
+                time_images -= start
+                all = time_draw + time_db + time_images
+
+                the_file.write(
+                    "Read Image: "
+                    + str(time_images)
+                    + " Extract features: "
+                    + str(time_features)
+                    + " update db: "
+                    + str(time_db)
+                    + " draw image: "
+                    + str(time_draw)
+                    + " all except extractor: "
+                    + str(all)
+                    + "\n"
+                )
 
             if cv2.getTrackbarPos("close", self.window_name) == 1:
                 cv2.destroyAllWindows()
