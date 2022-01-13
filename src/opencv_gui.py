@@ -6,6 +6,7 @@ import numpy
 import cropper
 import feature_extractor_interface
 import database
+import argparse
 
 
 def draw_on_image(image_to_edit, left, top, width, height, person_id):
@@ -67,7 +68,7 @@ class OpencvGUI:
         cv2.namedWindow(self.window_name)
         cv2.createTrackbar("close", self.window_name, 0, 1, f)
         extractor = feature_extractor_interface.feature_extractor_interface(
-            "osnet_x0_25", "F:\\n\\osnet_x0_25_imagenet.pth", "cuda"
+            "osnet_x0_25", "F:/n/osnet_x0_25_imagenet.pth", "cpu"
         )
         db = database.database(-1, -1)
 
@@ -120,6 +121,14 @@ class OpencvGUI:
 
 
 if __name__ == "__main__":
+    # get command line arguments
+    argument_parser = argparse.ArgumentParser()
+    argument_parser.add_argument('--image_path', type=str)
+    argument_parser.add_argument('--detection_path', type=str)
+    arguments = argument_parser.parse_args()
+    image_dir = arguments.image_path
+    detection_file = arguments.detection_path
+
     image_dir = "./../datasets/MOT20-01/img1"
     # image_dir = "F:/AS_Labor/AS_Labor/IW276WS21-P20/datasets/MOT20-01/img1"
     detection_file = "./../datasets/MOT20-01/det/det.txt"

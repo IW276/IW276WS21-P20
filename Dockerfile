@@ -27,9 +27,10 @@ RUN pip3 install -r /deep-person-reid/requirements.txt
 
 RUN pip3 install --upgrade torch numpy
 
-RUN apt-get update && \
-    apt-get install -y libqt5gui5 && \
-    rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && \
+#    apt-get install -y libqt5gui5 && \
+#    rm -rf /var/lib/apt/lists/*
+
 ENV QT_DEBUG_PLUGINS 1
 ENV QT_QPA_PLATFORM_PLUGIN_PATH /usr/local/lib/python3.6/dist-packages/cv2/qt/plugins/platforms
 
@@ -77,5 +78,5 @@ ENV QT_QPA_PLATFORM_PLUGIN_PATH /usr/local/lib/python3.6/dist-packages/cv2/qt/pl
 
 #RUN echo 'conda activate python-app \n\
 #alias python-app="python python-app.py"' >> /root/.bashrc
-#ENTRYPOINT [ "/bin/bash", "-l", "-c" ]
+ENTRYPOINT ["/bin/bash"]
 #CMD ["python python-app.py"]

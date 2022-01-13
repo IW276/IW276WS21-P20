@@ -28,6 +28,7 @@ class feature_extractor_interface:
         #     extractor_model = "osnet_x0_25"
 
         try:
+            print(device_to_use)
             self.extractor = FeatureExtractor(
                 model_name=extractor_model,  # extractor_model,
                 model_path=path_to_model,  # path_to_model,

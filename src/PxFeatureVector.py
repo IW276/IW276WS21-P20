@@ -27,7 +27,7 @@ class PxFeatureVector:
         list = []
         add = list.add
         for vector in compare_with:
-            dist2 = euclid(my_vector, vector.attributes.values())
+            dist2 = euclid(my_vector.cpu(), vector.attributes.values().cpu())
             add(dist2, vector)
         return list
 
@@ -39,6 +39,6 @@ class PxFeatureVector:
         my_vector = self.attributes
         # print(my_vector)
         # other_vector = compare_with.attributes
-        dist2 = euclid(self.attributes, compare_with)
+        dist2 = euclid(self.attributes.cpu(), compare_with.cpu())
 
         return dist2
