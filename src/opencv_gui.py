@@ -68,7 +68,7 @@ class OpencvGUI:
         cv2.namedWindow(self.window_name)
         cv2.createTrackbar("close", self.window_name, 0, 1, f)
         extractor = feature_extractor_interface.feature_extractor_interface(
-            "osnet_x0_25", "F:/n/osnet_x0_25_imagenet.pth", "cpu"
+            "osnet_x0_25", "F:/n/osnet_x0_25_imagenet.pth", "cuda"
         )
         db = database.database(-1, -1)
 
@@ -129,9 +129,9 @@ if __name__ == "__main__":
     image_dir = arguments.image_path
     detection_file = arguments.detection_path
 
-    image_dir = "./../datasets/MOT20-01/img1"
+    #image_dir = "./../datasets/MOT20-01/img1"
     # image_dir = "F:/AS_Labor/AS_Labor/IW276WS21-P20/datasets/MOT20-01/img1"
-    detection_file = "./../datasets/MOT20-01/det/det.txt"
+    #detection_file = "./../datasets/MOT20-01/det/det.txt"
     # detection_file = "F:\AS_Labor\AS_Labor\IW276WS21-P20/datasets/MOT20-01/det/det.txt"
     gui = OpencvGUI()
-    gui.run(image_dir, detection_file)
+    gui.run("./../datasets/MOT20-01/img1", "./../datasets/MOT20-01/det/det.txt")

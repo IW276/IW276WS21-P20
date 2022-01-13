@@ -25,13 +25,13 @@ RUN git clone https://github.com/KaiyangZhou/deep-person-reid.git
 
 RUN pip3 install -r /deep-person-reid/requirements.txt
 
-RUN pip3 install --upgrade torch numpy
+RUN pip3 install --upgrade torch
 
 #RUN apt-get update && \
 #    apt-get install -y libqt5gui5 && \
 #    rm -rf /var/lib/apt/lists/*
 
-ENV QT_DEBUG_PLUGINS 1
+#ENV QT_DEBUG_PLUGINS 1
 ENV QT_QPA_PLATFORM_PLUGIN_PATH /usr/local/lib/python3.6/dist-packages/cv2/qt/plugins/platforms
 
 # inside the docker container cli:
