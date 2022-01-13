@@ -158,7 +158,7 @@ class OpencvGUI:
                     + str(time_images)
                     + " Extract features: "
                     + str(time_features)
-                    " update db: "
+                    + " update db: "
                     + str(time_db)
                     + " draw image: "
                     + str(time_draw)
