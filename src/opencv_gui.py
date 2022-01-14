@@ -2,15 +2,10 @@ import time
 
 import cv2
 import ImgIngest
-import numpy
-
-# import cropper
-# import feature_extractor_interface
+import cropper
+import feature_extractor_interface
 import database
-from cv2 import imread, IMREAD_COLOR
-from torchreid.utils import FeatureExtractor
-
-import time
+import argparse
 
 
 def draw_on_image(image_to_edit, left, top, width, height, person_id):
@@ -60,7 +55,7 @@ class OpencvGUI:
         self.running = False
         cv2.destroyAllWindows()
 
-    def run(self, image_dir_param, detection_file_param):
+    def run(self, image_dir_param, detection_file_param, identified_images_path_param):
         # init ingest
         ingestion = ImgIngest.ImgIngest()
         ingestion.set_path_img_folder(image_dir_param)
@@ -170,15 +165,25 @@ class OpencvGUI:
                     + "\n"
                 )
 
-            if cv2.getTrackbarPos("close", self.window_name) == 1:
-                cv2.destroyAllWindows()
-                return
+            if not identified_images_path_param:
+                cv2.imshow(self.window_name, rescaled_image)
+                cv2.waitKey(1)
 
-            current_frame += 1
-            if total_amount_frames <= current_frame:
-                # if image_info["frame_count_total"] <= image_info["current_frame"]:
+                if cv2.getTrackbarPos("close", self.window_name) == 1:
+                    cv2.destroyAllWindows()
+                    return
+            else:
+                cv2.imwrite(identified_images_path_param + str(image_info["current_frame"]) + ".jpg", rescaled_image)
+
+            if image_info["current_frame"] % 10 == 0:
                 end_time = time.time()
-                print("fps =" + str(total_amount_frames / (end_time - start_time)))
+                print(
+                    "fps ="
+                    + str(10 / (end_time - start_time))
+                )
+                start_time = end_time
+
+            if image_info["frame_count_total"] <= image_info["current_frame"]:
                 cv2.destroyAllWindows()
                 return
 
@@ -196,9 +201,24 @@ class OpencvGUI:
 
 
 if __name__ == "__main__":
-    # image_dir = #"./../datasets/MOT20-01/img1"
-    image_dir = "F:/AS_Labor/AS_Labor/IW276WS21-P20/datasets/MOT20-01/img1"
-    # detection_file = #"./../datasets/MOT20-01/det/det.txt"
-    detection_file = "F:\AS_Labor\AS_Labor\IW276WS21-P20/datasets/MOT20-01/det/det.txt"
+    # get command line arguments
+    argument_parser = argparse.ArgumentParser()
+    argument_parser.add_argument("--image_path", type=str)
+    argument_parser.add_argument("--detection_path", type=str)
+    argument_parser.add_argument("--identified_images", type=str)
+    arguments = argument_parser.parse_args()
+    image_dir = arguments.image_path
+    detection_file = arguments.detection_path
+    identified_images_path = arguments.identified_images
+    if not image_dir:
+        image_dir = "./../datasets/MOT20-01/img1"
+    if not detection_file:
+        detection_file = "./../datasets/MOT20-01/det/det.txt"
+    if not identified_images_path:
+        identified_images_path = None
+    #image_dir = "./../datasets/MOT20-01/img1"
+    # image_dir = "F:/AS_Labor/AS_Labor/IW276WS21-P20/datasets/MOT20-01/img1"
+    #detection_file = "./../datasets/MOT20-01/det/det.txt"
+    # detection_file = "F:\AS_Labor\AS_Labor\IW276WS21-P20/datasets/MOT20-01/det/det.txt"
     gui = OpencvGUI()
-    gui.run(image_dir, detection_file)
+    gui.run(image_dir, detection_file, identified_images_path)

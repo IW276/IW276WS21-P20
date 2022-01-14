@@ -39,6 +39,6 @@ class PxFeatureVector:
         my_vector = self.attributes
         # print(my_vector)
         # other_vector = compare_with.attributes
-        dist2 = euclid(self.attributes, compare_with)
+        dist2 = euclid(self.attributes.cpu(), compare_with.cpu())
 
         return dist2
