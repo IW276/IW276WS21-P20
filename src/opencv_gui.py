@@ -1,9 +1,9 @@
 import time
 
 import cv2
+from torchreid.utils import FeatureExtractor
+from cv2 import IMREAD_COLOR
 import ImgIngest
-import cropper
-import feature_extractor_interface
 import database
 import argparse
 
@@ -68,11 +68,9 @@ class OpencvGUI:
         current_frame = 0
         total_amount_frames = ingestion.total_number_of_frames
 
-        cv2.namedWindow(self.window_name)
-        cv2.createTrackbar("close", self.window_name, 0, 1, f)
-        # extractor = feature_extractor_interface.feature_extractor_interface(
-        #     "osnet_x0_25", "F:\\n\\osnet_x0_25_imagenet.pth", "cuda"
-        # )
+        if not identified_images_path_param:
+            cv2.namedWindow(self.window_name)
+            cv2.createTrackbar("close", self.window_name, 0, 1, f)
 
         try:
             self.extractor = FeatureExtractor(
@@ -85,10 +83,6 @@ class OpencvGUI:
             self.extractor = FeatureExtractor(
                 "osnet_x0_25", "./../osnet_ain_x0_25_imagenet.pyth", device="cpu"
             )
-            # default_path = (
-            #    str(base_path).replace("\\", "\\\\")
-            #    + "\\\\osnet_ain_x0_25_imagenet.pyth"
-            # )
 
         db = database.database(-1, -1)
 
@@ -96,11 +90,8 @@ class OpencvGUI:
             image_info = ingestion.get_frame_info()
             start = time.time()
 
-            # creating crops
-            # def create_crops(image_path, crop_coordinates):
-
             resulting_crops = []
-            image = imread(image_info["img"], IMREAD_COLOR)
+            image = cv2.imread(image_info["img"], IMREAD_COLOR)
             for row in image_info["data"].itertuples():
                 top = row[3]
                 left = row[4]
@@ -113,17 +104,13 @@ class OpencvGUI:
             time_images = time.time()
             crops_image = resulting_crops
 
-            # TODO deliver crops_image to feature extractor
             feature_tensor = self.extractor(crops_image)
             time_features = time.time()
-            # def extract_images(self, list_of_images):
 
             db.update_list()
             all_ids = db.update_tensorList(feature_tensor)
             time_db = time.time()
-            # draw BBs and IDs
-            # self.update_image(image_info["img"], image_info["data"], all_ids)
-            # def update_image(self, image_path, coords, ids):
+
             self.image = cv2.imread(image_info["img"], cv2.IMREAD_COLOR)
             placeholder_id = 1
             i = 0
@@ -140,30 +127,6 @@ class OpencvGUI:
             height_1 = int(self.image.shape[0] * (scale_percent_1 / 100))
             dim_1 = (width_1, height_1)
             rescaled_image = cv2.resize(self.image, dim_1, interpolation=cv2.INTER_AREA)
-            cv2.imshow(self.window_name, rescaled_image)
-            cv2.waitKey(1)
-            time_draw = time.time()
-            with open("fpscheckerfile.txt", "a") as the_file:
-
-                time_draw -= time_db
-                time_db -= time_features
-                time_features -= time_images
-                time_images -= start
-                all = time_draw + time_db + time_images
-
-                the_file.write(
-                    "Read Image: "
-                    + str(time_images)
-                    + " Extract features: "
-                    + str(time_features)
-                    + " update db: "
-                    + str(time_db)
-                    + " draw image: "
-                    + str(time_draw)
-                    + " all except extractor: "
-                    + str(all)
-                    + "\n"
-                )
 
             if not identified_images_path_param:
                 cv2.imshow(self.window_name, rescaled_image)
@@ -175,30 +138,38 @@ class OpencvGUI:
             else:
                 cv2.imwrite(identified_images_path_param + str(image_info["current_frame"]) + ".jpg", rescaled_image)
 
+            time_draw = time.time()
+
+            with open("fpscheckerfile.txt", "a") as the_file:
+
+                time_draw -= time_db
+                time_db -= time_features
+                time_features -= time_images
+                time_images -= start
+                time_all = time_draw + time_db + time_images + time_features
+
+                the_file.write(
+                    "Read Image: "
+                    + str(time_images)
+                    + " Extract features: "
+                    + str(time_features)
+                    + " update db: "
+                    + str(time_db)
+                    + " draw image: "
+                    + str(time_draw)
+                    + " all except extractor: "
+                    + str(time_all)
+                    + "\n"
+                )
+
             if image_info["current_frame"] % 10 == 0:
                 end_time = time.time()
-                print(
-                    "fps ="
-                    + str(10 / (end_time - start_time))
-                )
+                print("Frame: " + str(image_info["current_frame"]) + " fps =" + str(10 / (end_time - start_time)))
                 start_time = end_time
 
             if image_info["frame_count_total"] <= image_info["current_frame"]:
                 cv2.destroyAllWindows()
                 return
-
-    # def update_image(self, image_path, coords, ids):
-    #     self.image = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    #     placeholder_id = 1
-    #     i = 0
-    #     for row in coords.itertuples():
-    #         placeholder_id = placeholder_id + 1
-    #         self.image = draw_on_image(
-    #             self.image, row[3], row[4], row[5], row[6], ids[i]
-    #         )
-    #         i += 1
-    #     return
-
 
 if __name__ == "__main__":
     # get command line arguments
@@ -216,9 +187,5 @@ if __name__ == "__main__":
         detection_file = "./../datasets/MOT20-01/det/det.txt"
     if not identified_images_path:
         identified_images_path = None
-    #image_dir = "./../datasets/MOT20-01/img1"
-    # image_dir = "F:/AS_Labor/AS_Labor/IW276WS21-P20/datasets/MOT20-01/img1"
-    #detection_file = "./../datasets/MOT20-01/det/det.txt"
-    # detection_file = "F:\AS_Labor\AS_Labor\IW276WS21-P20/datasets/MOT20-01/det/det.txt"
     gui = OpencvGUI()
     gui.run(image_dir, detection_file, identified_images_path)

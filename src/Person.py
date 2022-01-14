@@ -60,7 +60,7 @@ class Person:
 
         if amount_of_frames == 0:
             return -1
-        return distance.euclidean(average_ranking / amount_of_frames, px_vector)
+        return distance.euclidean((average_ranking / amount_of_frames).cpu(), px_vector.cpu())
 
     def get_age(self):
         return self.age
