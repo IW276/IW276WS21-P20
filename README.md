@@ -46,6 +46,10 @@ cd IW276WS21-P20
 sudo jetson_clocks
 ```
 
+4. (optional) using own images and detectionfile
+If you intend to use your own data you have to put the images into the "/dataset" folder of the repository.
+Best is to put the images into for a folder called "/dataset/img" for example and the detection file into "/dataset/det" to have it seperated.
+
 > [Optional] If you intend to view the process live you have to use a monitor directly connected to the Jetson Nano, else there will most likely be an error telling you "could not connect to display / Aborted (core dumped)"
 
 ##Docker
@@ -56,15 +60,14 @@ Executing and building the project is done using docker.
 Execute the following code to build the docker image (while being in the project folder /IW276WS21-P20)
 
 ```
-docker build -t reid_P20_final .
+sudo bash docker-build.sh
 ```
 
 ## Running
 
 To run the demo, pass path to the pre-trained checkpoint and camera id (or path to video file):
 ```
-xhost +local:docker
-docker run --rm -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix reid_P20_final
+sudo bash docker-run.sh
 ```
 
 In the Docker container run the three commands listed below together with one of the 4 options listet below.
