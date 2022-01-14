@@ -157,7 +157,7 @@ class OpencvGUI:
                     + str(time_db)
                     + " draw image: "
                     + str(time_draw)
-                    + " all except extractor: "
+                    + " all: "
                     + str(time_all)
                     + "\n"
                 )
