@@ -15,7 +15,7 @@ After former projects already focused on identifying objects in images and video
 
 * [Requirements](#requirements)
 * [Prerequisites](#prerequisites)
-* [Docker](#Docker)
+* [Docker](#docker)
 * [Running](#running)
 * [Acknowledgments](#acknowledgments)
 
@@ -47,17 +47,28 @@ sudo jetson_clocks
 ```
 
 4. (optional) using own images and detectionfile
+
 If you intend to use your own data you have to put the images into the "/dataset" folder of the repository.
 Best is to put the images into for a folder called "/dataset/img" for example and the detection file into "/dataset/det" to have it seperated.
 
+If you already have such kind of folder structure just copy it using the following command and insert te correct paths.
+```
+cp -a /source/. /dest/
+```
+if you dont have the folder structure as mentioned above add the folders using 
+```
+mkdir /new-directory-path/
+```
+
 > [Optional] If you intend to view the process live you have to use a monitor directly connected to the Jetson Nano, else there will most likely be an error telling you "could not connect to display / Aborted (core dumped)"
 
-##Docker
+## Docker
+
 Executing and building the project is done using docker.
 
-###Build
+### Build
 
-Execute the following code to build the docker image (while being in the project folder /IW276WS21-P20)
+Execute the following code in order to build the docker image (while being in the project folder /IW276WS21-P20)
 
 ```
 sudo bash docker-build.sh
