@@ -87,11 +87,15 @@ Option 3: run application using own data with gui
 ```
 python3 opencv_gui.py --image_path IMAGES_FOLDER_LOCATION_PATH --detection_path DET_FILE_PATH
 ```
+> INFO: own images and detection file need to be placed in the /datasets folder previous to building.
+
 Option 4: run application using own data headless
 ```
 mkdir /images_outputfolder
 python3 opencv_gui.py --image_path IMAGES_FOLDER_LOCATION_PATH --detection_path DET_FILE_PATH --identified_images /images_outputfolder
 ```
+> INFO: own images and detection file need to be placed in the /datasets folder previous to building.
+
 
 > INFO: for option 1 and 3 remember to have a monitor connected to you Jetson Nano.
 
