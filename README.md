@@ -3,7 +3,9 @@
 After former projects already focused on identifying objects in images and video feeds this project is about re-identifying those objects in a sequence of images.
 
 <p align="center">
+  
   [Demo Video](https://github.com/IW276/IW276WS21-P20/blob/master/resources/2022-01-13%2019-16-16.mkv)
+  
   [Presentation Video](https://github.com/IW276/IW276WS21-P20/blob/master/resources/AutonomeSystemeLabor_IW276WS21P20video.mp4)
 </p>
 
