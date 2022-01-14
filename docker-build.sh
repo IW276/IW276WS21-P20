@@ -1,0 +1,1 @@
+docker build -t reid_P20_final .
