@@ -75,7 +75,7 @@ class OpencvGUI:
         try:
             self.extractor = FeatureExtractor(
                 model_name="osnet_x0_25",  # extractor_model,
-                model_path="F:\\n\\osnet_x0_25_imagenet.pth",  # path_to_model,
+                model_path="./../osnet_ain_x0_25_imagenet.pyth",  # path_to_model,
                 device="cuda",
             )
         except Exception as e:
