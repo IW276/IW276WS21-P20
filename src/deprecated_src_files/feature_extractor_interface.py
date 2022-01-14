@@ -13,9 +13,9 @@ import pathlib
 class feature_extractor_interface:
 
     extractor = 0
-    image_list = 0
-    features = 0
-    srcfiles = 0
+    # image_list = 0
+    # features = 0
+    # srcfiles = 0
 
     def __init__(self, extractor_model, path_to_model, device_to_use):
         # model_file = pathlib.Path(path_to_model)
@@ -32,17 +32,17 @@ class feature_extractor_interface:
             self.extractor = FeatureExtractor(
                 model_name=extractor_model,  # extractor_model,
                 model_path=path_to_model,  # path_to_model,
-                device=device_to_use
+                device=device_to_use,
             )
         except Exception as e:
             print(e)
             self.extractor = FeatureExtractor(
                 "osnet_x0_25", "./../osnet_ain_x0_25_imagenet.pyth", device="cpu"
             )
-                    # default_path = (
-                    #    str(base_path).replace("\\", "\\\\")
-                    #    + "\\\\osnet_ain_x0_25_imagenet.pyth"
-                    # )
+            # default_path = (
+            #    str(base_path).replace("\\", "\\\\")
+            #    + "\\\\osnet_ain_x0_25_imagenet.pyth"
+            # )
 
     def extract_images(self, list_of_images):
 
@@ -52,9 +52,9 @@ class feature_extractor_interface:
         features = self.extractor(list_of_images)
         return features
 
-    def extract_image(self, image):
+    # def extract_image(self, image):
 
-        list_of_images = []
-        list_of_images.append(image)
-        features = self.extractor(list_of_images)
-        return features
+    #     list_of_images = []
+    #     list_of_images.append(image)
+    #     features = self.extractor(list_of_images)
+    #     return features
